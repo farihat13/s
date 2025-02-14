@@ -9,8 +9,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     alias ls='ls --color=auto'
     # Auto-install xclip if not installed
     if ! command -v xclip &> /dev/null; then
-        echo "Installing xclip (required for clipboard support in tmux)..."
-        sudo apt update && sudo apt install -y xclip
+        echo "Install xclip (required for clipboard support in tmux)..."
     fi
 fi
 
