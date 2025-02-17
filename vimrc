@@ -1,3 +1,9 @@
+" === Auto-install vim-plug if not found === 
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
+
 " === General Settings ===
 set mouse=a              " Enable the mouse in all modes
 set number               " Show line numbers
@@ -71,11 +77,9 @@ tnoremap <leader>nn <C-\><C-n>
 autocmd FileType c setlocal commentstring=//%s 
 
 " === Plugins ===
-" Install Vim-Plug if not installed
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-endif
+" Install Vim-Plug manually if not installed
+" !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 
 call plug#begin('~/.vim/plugged')
 
