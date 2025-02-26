@@ -5,8 +5,9 @@
 #              disk, cache, NUMA, and optionally network data) after ensuring
 #              required packages are installed.
 #
-# Usage: ./system-info.sh [--network]
+# Usage: ./system-info.sh [--network] [--memory]
 #   --network   Include network information in the report.
+#   --memory    Show expanded memory information (per-DIMM, ECC, manufacturer).
 #
 # Requirements: lsb_release, lscpu, free, lsblk, nvme (optional), numactl (optional),
 #               ip, top, ps, and iostat (optional).
@@ -17,6 +18,7 @@ IFS=$'\n\t'
 
 # Global flag to control network info output
 INCLUDE_NETWORK=false
+DETAILED_MEMORY=false
 
 # -----------------------------------------------------------------------------
 # Function: usage
@@ -25,6 +27,7 @@ INCLUDE_NETWORK=false
 usage() {
   echo "Usage: $0 [--network]"
   echo "  --network   Include network information in the report."
+  echo "  --memory  Show expanded memory information (per-DIMM, ECC, manufacturer)."
   exit 1
 }
 
@@ -35,6 +38,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --network)
       INCLUDE_NETWORK=true
+      shift
+      ;;
+    --memory)
+      DETAILED_MEMORY=true
       shift
       ;;
     -h|--help)
@@ -98,6 +105,7 @@ install_dependencies() {
     [top]="procps"
     [ps]="procps"
     [iostat]="sysstat"
+    [dmidecode]="dmidecode"
   )
 
   echo "========== Checking and Installing Dependencies =========="
@@ -155,15 +163,56 @@ print_cpu_info() {
 
 # -----------------------------------------------------------------------------
 # Function: print_memory_info
-# Description: Prints memory usage details.
+# Description: Displays concise memory info, with optional detailed output.
 # -----------------------------------------------------------------------------
 print_memory_info() {
   echo "========== Memory Information =========="
+
+  # Total System Memory
   if command_exists free; then
-    free -h
-  else
-    echo "free command not found."
+    echo "Total Memory:"
+    free -h | awk '/Mem:/ {print "  " $2 " total, " $3 " used, " $4 " free"}'
+    echo
   fi
+
+  # NUMA Memory Layout
+  if command_exists numactl; then
+    echo "NUMA Memory Allocation:"
+    numactl --hardware | awk '/node [0-9]+ size:/ {print "  " $0}'
+    echo
+  fi
+
+  # Expanded details if --detailed flag is set
+  if [ "$DETAILED_MEMORY" = true ]; then
+    if command_exists dmidecode; then
+      echo "Per-DIMM Memory Details:"
+      sudo dmidecode --type memory | awk '
+        BEGIN { skip = 0 }
+        /Memory Device/ { skip = 0; header_printed = 0 }
+        /Size: No Module Installed|Volatile Size: None/ { skip = 1 }
+        skip == 0 && /Error Correction Type:|Size:|Type:|Speed:/ {
+          if (!header_printed) { 
+            printf "\n--------------------------------------\n"; 
+            header_printed = 1 
+          }
+          sub(/^[ \t]+/, "  "); print
+        }
+      '
+      echo
+
+      # ECC Check
+      echo "Checking ECC Support:"
+      ECC_TYPE=$(sudo dmidecode -t 16 | grep "Error Correction Type:" | awk -F: '{print $2}' | xargs)
+      if [[ "$ECC_TYPE" != "None" ]]; then
+        echo "  ECC is enabled: $ECC_TYPE"
+      else
+        echo "  ECC is NOT enabled."
+      fi
+    else
+      echo "dmidecode command not found. Skipping detailed memory info."
+    fi
+  fi
+
   echo
 }
 
