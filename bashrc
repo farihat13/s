@@ -49,6 +49,7 @@ git_branch() {
 
 # Prompt customization (Time, Directory, Git Branch)
 export PS1='\[\e[1m\]\[\e[32m\]\D{%I:%M%p} \[\e[34m\]\W\[\e[31m\]$(git_branch)\[\e[m\] -> '
+export PS1='\[\e[1m\]\[\e[32m\]@\h \[\e[34m\]\W\[\e[31m\]$(git_branch)\[\e[m\] -> '
 
 # Aliases
 alias ll='ls -alF'
