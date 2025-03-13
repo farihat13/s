@@ -1,5 +1,7 @@
 #!/bin/bash
+set -ex
 
+cd ~
 wget https://farihat13.github.io/s/bashrc -O .bashrc
 wget https://farihat13.github.io/s/vimrc -O .vimrc
 wget https://farihat13.github.io/s/tmux.conf -O .tmux.conf
@@ -13,3 +15,4 @@ chmod u+x ./*
 
 sudo apt update
 sudo apt install xclip
+
