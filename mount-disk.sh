@@ -26,8 +26,8 @@ FSTYPE=$(lsblk -no FSTYPE "$DISK")
 
 # If no filesystem is detected, format the disk as ext3
 if [ -z "$FSTYPE" ]; then
-    echo "Formatting $DISK as ext3..."
-    sudo mkfs.ext3 -q "$DISK"
+    echo "Formatting $DISK as ext4..."
+    sudo mkfs.ext4 -q "$DISK"
 fi
 
 # Create the mount point if it does not exist
@@ -37,6 +37,7 @@ fi
 
 # Mount the disk
 sudo mount "$DISK" "$MOUNT_POINT"
+echo "Successfully mounted $DISK to $MOUNT_POINT"
 
 # Change ownership of the mount point to match the home directory owner
 USER_OWNER=$(stat -c "%U" "$HOME")
@@ -49,5 +50,6 @@ if [ -L "$SYMLINK_PATH" ]; then
     rm "$SYMLINK_PATH"
 fi
 ln -s "$MOUNT_POINT" "$SYMLINK_PATH"
+echo "Symlink created: $SYMLINK_PATH -> $MOUNT_POINT"
 
 exit 0
