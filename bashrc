@@ -39,7 +39,7 @@ maybe_show_message() {
         echo -e "\n*** $(get_positive_message) ***\n"
     fi
 }
-PROMPT_COMMAND=maybe_show_message
+# PROMPT_COMMAND=maybe_show_message
 
 # Function to get the current Git branch
 git_branch() {
