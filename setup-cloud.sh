@@ -13,6 +13,9 @@ wget https://farihat13.github.io/s/mount-disk.sh
 wget https://farihat13.github.io/s/unmount-disk.sh
 chmod u+x ./*
 
+git config --global user.email "fariha.t13@gmail.com"
+git config --global user.name "Fariha Tabassum Islam"
+
 sudo apt update
 sudo apt install xclip
 
