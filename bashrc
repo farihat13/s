@@ -72,10 +72,10 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 # Keybindings for history search (up/down)
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
-bind '"\C-p": history-search-backward'
-bind '"\C-n": history-search-forward'
+# bind '"\e[A": history-search-backward'
+# bind '"\e[B": history-search-forward'
+# bind '"\C-p": history-search-backward'
+# bind '"\C-n": history-search-forward'
 
 # Enable Vim keybindings in Bash
 set -o vi
