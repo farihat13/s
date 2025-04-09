@@ -54,6 +54,7 @@ hi StatusLineNC cterm=NONE ctermbg=darkgrey ctermfg=black guibg=#3a3a3a guifg=#d
 " === Key Mappings for Navigation ===
 nnoremap <leader>s :w<CR>   " Save file with \s
 nnoremap <leader>x :x<CR>   " Save and exit with \x
+nnoremap <Space> i_<Esc>r   " Insert a char and return to normal mode 
 nnoremap <Enter> o<ESC>     " Insert a blank line below
 nnoremap <leader>t :tabnew<CR>    " Open a new tab
 nnoremap <leader>e :e<Space>      " Quickly open a file
