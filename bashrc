@@ -19,28 +19,6 @@ export HISTSIZE=10000    # Number of commands in history
 export HISTFILESIZE=20000
 shopt -s histappend     # Append to history instead of overwriting
 
-# Function to get a positive message
-get_positive_message() {
-    messages=(
-        "You got this, Fariha! "
-        "Every small step counts. "
-        "Stay curious and keep learning! 📚"
-        "You're doing amazing! 🌟"
-        "Believe in yourself! 🌻"
-        "Success is just around the corner! "
-        "Keep going, you're unstoppable! 🌟"
-    )
-    echo "${messages[$RANDOM % ${#messages[@]}]}"
-}
-
-# Show motivational message ~10% of the time
-maybe_show_message() {
-    if (( RANDOM % 10 == 0 )); then
-        echo -e "\n*** $(get_positive_message) ***\n"
-    fi
-}
-# PROMPT_COMMAND=maybe_show_message
-
 # Function to get the current Git branch
 git_branch() {
     branch=$(git symbolic-ref --short HEAD 2>/dev/null)
@@ -71,11 +49,14 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-# Keybindings for history search (up/down)
-# bind '"\e[A": history-search-backward'
-# bind '"\e[B": history-search-forward'
-# bind '"\C-p": history-search-backward'
-# bind '"\C-n": history-search-forward'
+# Auto-activate venv if .venv/ exists in directory
+function cd() {
+    builtin cd "$@" || return
+    if [ -d "venv" ] && [ -f "venv/bin/activate" ]; then
+        source venv/bin/activate
+        echo "🌀 Auto-activated venv inside $(pwd)"
+    fi
+}
 
 # Enable Vim keybindings in Bash
 set -o vi
