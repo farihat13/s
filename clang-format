@@ -1,0 +1,14 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+
+ColumnLimit: 100  # Good width for readability, not too long
+
+PointerAlignment: Left  # int* ptr; (not int *ptr;)
+
+#SortIncludes: false  # Don't auto-sort your #includes
