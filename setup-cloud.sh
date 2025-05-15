@@ -12,6 +12,7 @@ wget https://farihat13.github.io/s/system-info.sh
 wget https://farihat13.github.io/s/mount-disk.sh
 wget https://farihat13.github.io/s/unmount-disk.sh
 wget https://farihat13.github.io/s/install-system-basics.sh
+wget https://farihat13.github.io/s/install-just.sh
 chmod u+x ./*
 
 git config --global user.email "fariha.t13@gmail.com"
