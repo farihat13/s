@@ -54,7 +54,7 @@ function cd() {
     builtin cd "$@" || return
     if [ -d "venv" ] && [ -f "venv/bin/activate" ]; then
         source venv/bin/activate
-        echo "🌀 Auto-activated venv inside $(pwd)"
+        # echo "🌀 Auto-activated venv inside $(pwd)"
     fi
 }
 
