@@ -50,13 +50,13 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 # Auto-activate venv if .venv/ exists in directory
-function cd() {
-    builtin cd "$@" || return
-    if [ -d "venv" ] && [ -f "venv/bin/activate" ]; then
-        source venv/bin/activate
-        # echo "🌀 Auto-activated venv inside $(pwd)"
-    fi
-}
+#function cd() {
+#    builtin cd "$@" || return
+#    if [ -d "venv" ] && [ -f "venv/bin/activate" ]; then
+#        source venv/bin/activate
+#        # echo "🌀 Auto-activated venv inside $(pwd)"
+#    fi
+#}
 
 # Enable Vim keybindings in Bash
 set -o vi
