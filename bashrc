@@ -7,10 +7,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export OS_TYPE="Linux"
     alias ls='ls --color=auto'
-    # Auto-install xclip if not installed
-    if ! command -v xclip &> /dev/null; then
-        echo "Install xclip (required for clipboard support in tmux)..."
-    fi
 fi
 
 # History settings
