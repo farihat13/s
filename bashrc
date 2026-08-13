@@ -28,7 +28,38 @@ git_branch() {
        || ! git diff --cached --quiet --ignore-submodules 2>/dev/null; then
         dirty="*"
     fi
-    echo " ($branch$dirty)"
+    echo " ⎇ $branch$dirty"
+}
+
+# Per-machine prompt color: hash the hostname to a stable, readable 256-color
+# so each cloudlab box looks visually distinct -- a cheap guard against running
+# a destructive command (just reset/start) on the wrong machine. Computed once.
+__host_color() {
+    local palette=(2 3 4 5 6 10 11 12 13 14 42 48 75 81 108 114 141 150 179 208 214 220)
+    local name="${HOSTNAME:-$(hostname)}" h=0 i c
+    for (( i=0; i<${#name}; i++ )); do
+        printf -v c '%d' "'${name:i:1}"     # ASCII code of the i-th char
+        h=$(( (h * 31 + c) % ${#palette[@]} ))
+    done
+    printf '%s' "${palette[h]}"
+}
+__HOST_COLOR=$(__host_color)
+
+# Show the active Python venv, if any (you use uv/.venv here). Disable the
+# activate script's own prompt edit so we render it ourselves, consistently.
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+__venv() {
+    [ -n "$VIRTUAL_ENV" ] || return
+    # prefer the venv's configured prompt name (uv defaults it to the project
+    # dir, e.g. "graph-storage-play"); fall back to the directory basename.
+    local name="${VIRTUAL_ENV_PROMPT:-$(basename "$VIRTUAL_ENV")}"
+    # bare 🐍 when the venv name matches the current dir (avoids repeating it);
+    # spell the name out only when it differs.
+    if [ "$name" = "$(basename "$PWD")" ]; then
+        printf ' ⬢'
+    else
+        printf ' ⬢ %s' "$name"
+    fi
 }
 
 # --- Command timer + last-exit status (shown in the prompt) ---
@@ -59,11 +90,11 @@ __prompt() {
 trap '__timer_start' DEBUG
 PROMPT_COMMAND=__prompt
 
-# Prompt:  host  dir (branch*) [exit] dur ❯
-#   host = bold green, dir = blue, branch = red, [exit] = red, duration = yellow,
-#   arrow = green on success / red on failure
+# Prompt:  host  dir (branch*) (venv) [exit] dur ❯
+#   host = per-machine color, dir = blue, branch = red, venv = cyan,
+#   [exit] = red, duration = yellow, arrow = green on success / red on failure
 __psym_color=$'\e[1;32m'   # default (green) until the first command completes
-PS1='\[\e[1;32m\]\h  \[\e[34m\]\W\[\e[31m\]$(git_branch)\[\e[31m\]${__exit_str}\[\e[33m\]${__cmd_time}\[\e[0m\] \[${__psym_color}\]❯\[\e[0m\] '
+PS1='\[\e[1;38;5;${__HOST_COLOR}m\]\h  \[\e[34m\]\W\[\e[31m\]$(git_branch)\[\e[36m\]$(__venv)\[\e[31m\]${__exit_str}\[\e[33m\]${__cmd_time}\[\e[0m\] \[${__psym_color}\]❯\[\e[0m\] '
 
 # Aliases
 alias ll='ls -alF'
